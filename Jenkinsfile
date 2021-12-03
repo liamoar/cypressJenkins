@@ -25,7 +25,6 @@ pipeline{
                        sh '''
                         ssh -tt -o StrictHostKeyChecking=no root@157.245.193.204 << EOF
                         cd /root/automation/cypressJenkins
-						git checkout dev
                         git pull origin dev
                         npm install
                         npm run sorrycy
