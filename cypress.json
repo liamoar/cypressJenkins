@@ -1,6 +1,7 @@
 {
-    "video": false,
+    "projectId": "AvinashTest",
     "reporter": "cypress-multi-reporters",
+    "chromeWebSecurity": false,
     "screenshotsFolder": "cypress/reports/mochareports/assets",
     "reporterOptions": {
         "reporterEnabled": "mochawesome",

@@ -1,27 +1,56 @@
+pipeline{
+    agent none
+    parameters{
+        choice(name:'ENV', choices:['DEV','LIVE'], description:"Env to test")
+        string(name:"BuildID",defaultValue:"build123")
+    }
 
-pipeline {
-	agent any
-	stages {
-		stage('Clone Git Repo'){
-				steps{
-					git 'https://github.com/qaboxletstest/cypress-jenkins-demo.git'
-		    }
-		}
-		stage('Install Dependencies'){
-				steps{
-					bat 'npm install'
-				}
-		}
-		stage('Run Tests'){
-				steps{
-					bat 'npm test'
-				}
-		}
-		stage('Publish HTML Report'){
-				steps{
-					publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'cypress/reports/mochareports', reportFiles: 'report.html', reportName: 'HTML Report', reportTitles: ''])
-				}
-		}
-	}
+    stages{
+        stage('Build Now'){
+            agent any
+            steps{
+                echo "---executing the code in ${ENV}"
+            }
+        }
+        stage('DEV Build'){
+            agent any
+            when{
+                branch 'dev'
+            }
+            steps{
+               script{
+                   sshagent(['14b83734-0329-4f79-8f7d-2bd577ac8819']){
+                       sh '''
+                        ssh -tt -o StrictHostKeyChecking=no root@157.245.193.204 << EOF
+                        cd /root/automation/cypressJenkins
+						git checkout dev
+                        git pull origin dev
+                        npm install
+                        npm run sorrycy
+                        exit
+                        EOF '''  
+                   }
+               }
+            }
+        }
+        stage('live Build'){
+            agent any
+            when{
+                branch 'live'
+            }
+            steps{
+                 sshagent(['14b83734-0329-4f79-8f7d-2bd577ac8819']){
+                       sh '''
+                         ssh -tt -o StrictHostKeyChecking=no root@157.245.193.204 << EOF
+                        cd /root/automation/cypressJenkins
+						git checkout live
+                        git pull origin live
+                        npm install
+                        npm run sorrycy
+                        exit
+                        EOF '''   
+                   }
+            }
+        }
+    }
 }
-
