@@ -15,7 +15,9 @@ pipeline{
         stage('DEV Build'){
             agent any
             when{
-                branch 'dev'
+                expression{
+					params.ENV = 'DEV'
+				}
             }
             steps{
                script{
@@ -36,8 +38,10 @@ pipeline{
         stage('live Build'){
             agent any
             when{
-                branch 'live'
-            }
+				 expression{
+					params.ENV = 'LIVE'
+				}
+			}
             steps{
                  sshagent(['14b83734-0329-4f79-8f7d-2bd577ac8819']){
                        sh '''
