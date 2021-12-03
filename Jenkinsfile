@@ -16,7 +16,7 @@ pipeline{
             agent any
             when{
                 expression{
-					params.ENV = 'DEV'
+					params.ENV == 'DEV'
 				}
             }
             steps{
@@ -39,7 +39,7 @@ pipeline{
             agent any
             when{
 				 expression{
-					params.ENV = 'LIVE'
+					params.ENV == 'LIVE'
 				}
 			}
             steps{
